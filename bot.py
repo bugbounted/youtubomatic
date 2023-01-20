@@ -375,4 +375,33 @@ def video_download(self, url: str, filename: str) -> None:
     f.close()
     resp.release_conn()
     
-
+    def upload(self):
+        driver = self.get_driver()
+        for data in self.db(get={'upload': None})[:self.limit]:
+            url = data[0]
+            if self.db(lookup={'url': url, 'upload': True}):
+                meta = data[1]
+                filename = self.counter
+                url = 'https://studio.youtube.com/channel/UCcF2MpZNT2MeSsN2H-K1gQA/videos/upload?d=ud&filter=%5B%5D&sort=%7B%22columnType%22%3A%22date%22%2C%22sortOrder%22%3A%22DESCENDING%22%7D'
+                driver.get(url)
+                driver.find_element(by=By.XPATH, value="//input[@type='file']").send_keys(f"ready_to_upload\\{self.username}_{filename}.mp4")
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH,value="//div[@id='textbox' and contains(@aria-label,'title')]").send_keys(f" {meta}")
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH,value="//div[@id='textbox' and contains(@aria-label,'viewers')]").send_keys(f"{meta} \nCredit: {self.username}")
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH,value="//tp-yt-paper-radio-button[@name='VIDEO_MADE_FOR_KIDS_NOT_MFK'] //div[@id='offRadio']").click()
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH, value="//div[contains(text(),'Next')]").click()
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH, value="//div[contains(text(),'Next')]").click()
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH, value="//div[contains(text(),'Next')]").click()
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH, value="//tp-yt-paper-radio-button[@name='PUBLIC']").click()
+                self.sleep_it(custom={"min": 5, "max": 7})
+                driver.find_element(by=By.XPATH, value="//ytcp-button/div[contains(text(),'Publish')]").click()
+                time.sleep(10)
+                self.counter += 1
+                self.db(store={'url': url, 'upload': True})
+        driver.close()
