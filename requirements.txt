@@ -1,0 +1,8 @@
+instagrapi
+requests
+moviepy
+pymongo[srv]
+dnspython
+playwright
+opencv-python
+datetime
