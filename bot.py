@@ -3,7 +3,6 @@ from instagrapi import Client
 import requests
 from moviepy.editor import VideoFileClip
 from playwright.sync_api import sync_playwright
-import requests
 import re
 import pymongo
 import cv2
@@ -26,6 +25,8 @@ import os
 from threading import Event
 from datetime import datetime, timedelta
 import secrets
+from bs4 import BeautifulSoup
+from random import shuffle
 
 # Logging Initializer
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
