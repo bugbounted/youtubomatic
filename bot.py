@@ -91,16 +91,9 @@ def set_driver_opt(req_dict: dict,
     """
     # Chrome
     chrome_options = webdriver.ChromeOptions()
-    if headless:
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-gpu")
-    else:
-        EVENT.wait(0.25)
-    chrome_options.add_argument("--user-agent=" + req_dict['yt_useragent'])
-    if website == "YOULIKEHITS":
-        chrome_options.add_extension('extensions/NopeCHA.crx')
-    else:
         chrome_options.add_argument("--disable-extensions")
         prefs = {"profile.managed_default_content_settings.images": 2,
                  "disk-cache-size": 4096,
@@ -119,8 +112,8 @@ def set_driver_opt(req_dict: dict,
         chrome_options.add_argument("--disable-web-security")
         chrome_options.add_argument("--allow-running-insecure-content")
         chrome_options.add_argument("--disable-infobars")
-    chrome_options.add_argument("--mute-audio")
-    chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--mute-audio")
+        chrome_options.add_argument("--window-size=1920,1080")
 
     # Set github token environment for webdriver manager
     os.environ['GH_TOKEN'] = req_dict['github_token']
@@ -130,15 +123,7 @@ def set_driver_opt(req_dict: dict,
     os.environ['WDM_SSL_VERIFY'] = '1'
     # Disable logging for webdriver manager
     os.environ['WDM_LOG'] = str(logging.NOTSET)
-    try:
-        if os.environ['HEROKU'] == 'available':
-            driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
-            return driver
-    except KeyError:
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(path=".wdm/drivers/chromedriver",
-                                                                            cache_valid_range=3).install()),
-                                  options=chrome_options)
-        return driver
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
 
 
 def youtube_too_many_controller() -> int:
