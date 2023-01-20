@@ -177,6 +177,48 @@ class youtube:
         pass
 
     def upload_video(self, video, title, related_hashtag_keyword, profile="Default"):
+        
+        options = webdriver.ChromeOptions()
+        options.add_argument("--log-level=3")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-extensions")
+        prefs = {"profile.managed_default_content_settings.images": 2,
+                 "disk-cache-size": 4096,
+                 "profile.password_manager_enabled": False,
+                 "credentials_enable_service": False}
+        options.add_experimental_option('prefs', prefs)
+        options.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("useAutomationExtension", False)
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--proxy-server='direct://'")
+        options.add_argument("--proxy-bypass-list=*")
+        options.add_argument("--disable-web-security")
+        options.add_argument("--allow-running-insecure-content")
+        options.add_argument("--disable-infobars")
+        options.add_argument("--mute-audio")
+        options.add_argument("--window-size=1920,1080")
+
+    # Set github token environment for webdriver manager
+    os.environ['GH_TOKEN'] = req_dict['github_token']
+    # Save binary webdrivers to project location
+    os.environ['WDM_LOCAL'] = '1'
+    # Enable or Disable SSL verification when downloading webdrivers
+    os.environ['WDM_SSL_VERIFY'] = '1'
+    # Disable logging for webdriver manager
+    os.environ['WDM_LOG'] = str(logging.NOTSET)
+    
+    path = '/usr/local/bin/chromedriver'
+    service = Service(path)
+    
+    driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), chrome_options=options, service=service)
+        
         driver.get("https://studio.youtube.com")
         time.sleep(3)
 
